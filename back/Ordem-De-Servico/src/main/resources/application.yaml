@@ -1,3 +1,18 @@
 spring:
   application:
     name: Ordem-De-Servico
+  datasource:
+    url: jdbc:mysql://localhost:3306/ordem_servico_bd
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL8Dialect
