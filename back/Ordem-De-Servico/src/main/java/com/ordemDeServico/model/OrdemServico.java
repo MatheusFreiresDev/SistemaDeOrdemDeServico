@@ -6,6 +6,7 @@ import com.ordemDeServico.model.enums.StatusOS;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -14,8 +15,9 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Table(name = "ordens_servico")
-public class OrdemDeServico {
+public class OrdemServico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -27,11 +29,11 @@ public class OrdemDeServico {
     private CategoriaOS categoria;
     @ManyToOne
     @JoinColumn(name = "criador_id")
-    private User criador;
+    private Usuario criador;
 
     @ManyToOne
     @JoinColumn(name = "executor_id")
-    private User executor;
+    private Usuario executor;
 
 
 

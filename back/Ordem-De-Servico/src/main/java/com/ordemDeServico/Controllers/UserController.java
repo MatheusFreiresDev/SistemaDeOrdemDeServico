@@ -1,29 +1,47 @@
 package com.ordemDeServico.Controllers;
 
-import com.ordemDeServico.Repository.UserRepository;
-import com.ordemDeServico.model.User;
+import com.ordemDeServico.Repository.UsuarioRepository;
+import com.ordemDeServico.Service.UserService;
+import com.ordemDeServico.model.Usuario;
 import com.ordemDeServico.model.enums.UserRoles;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    UserRepository userRepository;
 
+    private final UserService service;
+
+    @PostMapping
+    public ResponseEntity<Usuario> criar(@RequestBody Usuario request) {
+        return ResponseEntity.ok(service.criar(request));
+    }
 
     @GetMapping
-    public ResponseEntity<?> teste () {
-        User teste = User.builder().nome("teste").email("teste").senha("teste").role(UserRoles.CLIENTE).ordensExecutadas(new ArrayList<>()).ordensCriadas(new ArrayList<>()).build();
-        userRepository.save(teste);
-        return ResponseEntity.ok(userRepository.findByNome(teste.getNome()).orElse(null));
+    public ResponseEntity<List<Usuario>> listar() {
+        return ResponseEntity.ok(service.listarTodos());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Usuario> buscarPorId(@PathVariable int id) {
+        return ResponseEntity.ok(service.buscarPorId(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> atualizar(@PathVariable int id, @RequestBody Usuario request) {
+        return ResponseEntity.ok(service.atualizar(id, request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable int id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
     }
 }

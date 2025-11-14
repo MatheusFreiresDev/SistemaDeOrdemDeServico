@@ -1,5 +1,6 @@
 package com.ordemDeServico.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ordemDeServico.model.enums.UserRoles;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-import java.util.Collection;
 import java.util.List;
 
 @Builder
@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Table(name = "usuarios")
-public class User  {
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  int id;
@@ -26,10 +26,12 @@ public class User  {
     private String senha;
     @Enumerated(EnumType.STRING)
     private UserRoles role;
+    @JsonIgnore
     @OneToMany(mappedBy = "criador")
-    private List<OrdemDeServico> ordensCriadas;
+    private List<OrdemServico> ordensCriadas;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "executor")
-    private List<OrdemDeServico> ordensExecutadas;
+    private List<OrdemServico> ordensExecutadas;
 
 }
