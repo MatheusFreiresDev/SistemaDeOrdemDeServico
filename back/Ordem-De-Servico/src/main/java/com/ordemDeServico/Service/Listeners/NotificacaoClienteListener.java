@@ -1,6 +1,6 @@
 package com.ordemDeServico.Service.Listeners;
 
-import com.ordemDeServico.Observer.OrdemServicoStatusAtualizadoEvent;
+import com.ordemDeServico.Service.Event.OrdemServicoStatusAtualizadoEvent;
 import com.ordemDeServico.Service.EmailService; // Importe o seu EmailService
 import com.ordemDeServico.model.OrdemServico;
 import org.springframework.context.event.EventListener;

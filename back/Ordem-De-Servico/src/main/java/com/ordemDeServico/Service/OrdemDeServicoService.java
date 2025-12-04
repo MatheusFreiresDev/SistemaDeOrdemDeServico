@@ -1,6 +1,6 @@
 package com.ordemDeServico.Service;
 
-import com.ordemDeServico.Observer.OrdemServicoStatusAtualizadoEvent;
+import com.ordemDeServico.Service.Event.OrdemServicoStatusAtualizadoEvent;
 import com.ordemDeServico.Repository.OrdemServicoRepository;
 import com.ordemDeServico.Repository.UsuarioRepository;
 import com.ordemDeServico.model.OrdemServico;

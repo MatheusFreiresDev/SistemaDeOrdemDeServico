@@ -1,4 +1,4 @@
-package com.ordemDeServico.Observer;
+package com.ordemDeServico.Service.Event;
 
 import com.ordemDeServico.model.OrdemServico;
 
