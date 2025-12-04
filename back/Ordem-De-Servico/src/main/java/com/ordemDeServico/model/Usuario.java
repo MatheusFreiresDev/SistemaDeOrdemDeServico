@@ -33,5 +33,9 @@ public class Usuario {
     @JsonIgnore
     @OneToMany(mappedBy = "executor")
     private List<OrdemServico> ordensExecutadas;
+    @Override
+    public String toString() {
+        return "Usuario{id=" + id + ", nome='" + nome + "', email='" + email + "'}";
+    }
 
 }
