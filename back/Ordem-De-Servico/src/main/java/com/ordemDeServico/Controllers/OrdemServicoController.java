@@ -17,10 +17,10 @@ public class OrdemServicoController {
 
     @PostMapping("/{criador}")
     public ResponseEntity<OrdemServico> criar(
-            @PathVariable String criador,
+            @PathVariable String criador, // <--- Continua pegando da URL
             @RequestBody OrdemServico request) {
 
-        return ResponseEntity.ok(facade.criarOS(criador, request));
+        return ResponseEntity.status(201).body(facade.criarOS(criador, request)); // Use 201 Created
     }
 
     @GetMapping
@@ -43,9 +43,21 @@ public class OrdemServicoController {
         return ResponseEntity.ok(facade.atualizarOS(id, request));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable int id) {
-        facade.deletarOS(id);
+    @DeleteMapping("/{id}/{executorId}") // Adiciona o ID do usuário que deleta
+    public ResponseEntity<Void> deletar(
+            @PathVariable int id, // ID da OS a ser deletada
+            @PathVariable int executorId) { // ID do usuário executor
+
+        facade.deletarOS(id, executorId); // Atualiza a chamada na facade
         return ResponseEntity.noContent().build();
     }
+        @PutMapping("/{id}/avancar-status/{executorId}") // Novo endpoint com o ID do Executor
+        public ResponseEntity<OrdemServico> avancarStatus(
+                @PathVariable int id, // ID da OS
+                @PathVariable int executorId) { // ID do usuário que tenta executar a ação
+
+            OrdemServico osAtualizada = facade.avancarStatusOS(id, executorId);
+
+            return ResponseEntity.ok(osAtualizada);
+        }
 }

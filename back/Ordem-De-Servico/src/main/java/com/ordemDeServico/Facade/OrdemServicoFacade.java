@@ -15,11 +15,11 @@ public class OrdemServicoFacade {
     private final UserService userService;
     private final OrdemDeServicoService ordemService;
 
-    public OrdemServico criarOS(String criador, OrdemServico request) {
-        var user = userService.buscarPorNome(criador);
-        if (user == null) throw new RuntimeException("Usuário inválido");
+    // OrdemServicoFacade.java (Exemplo)
 
-        return ordemService.criar(request);
+    public OrdemServico criarOS(String criadorId, OrdemServico request) {
+        // 🚨 MUDANÇA: Repassa o ID do criador para o Service
+        return ordemService.criar(criadorId, request);
     }
 
     public List<OrdemServico> listarOS() {
@@ -34,7 +34,13 @@ public class OrdemServicoFacade {
         return ordemService.atualizar(id, request);
     }
 
-    public void deletarOS(int id) {
-        ordemService.deletar(id);
+    public void deletarOS(int id, int executorId) {
+        // Repassa a responsabilidade de verificação e deleção para o Service
+        ordemService.deletar(id, executorId);
+    }
+
+    public OrdemServico avancarStatusOS(Integer id, Integer executorId) {
+        // Repassa a responsabilidade de verificar a Role e avançar o status
+        return ordemService.avancarStatus(id, executorId);
     }
 }

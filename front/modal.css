@@ -1,0 +1,42 @@
+/* Estilo para o fundo da Modal */
+.modal {
+    display: none; /* Escondido por padrão */
+    position: fixed; /* Fixado na tela */
+    z-index: 100; /* Fica acima de tudo */
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); /* Fundo semi-transparente (escurecido) */
+}
+
+/* Estilo para a caixa de conteúdo da Modal */
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto; /* 10% do topo e centralizado */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Largura padrão */
+    max-width: 600px; /* Largura máxima */
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+}
+
+/* Botão de Fechar */
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 20px;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}   

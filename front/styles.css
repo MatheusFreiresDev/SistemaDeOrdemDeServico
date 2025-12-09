@@ -1,0 +1,117 @@
+body { 
+    font-family: Arial, sans-serif; 
+    margin: 20px; 
+    background-color: #f4f4f4;
+}
+h1, h2 { 
+    color: #333; 
+    border-bottom: 2px solid #ccc; 
+    padding-bottom: 5px; 
+}
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 20px; 
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+th, td { 
+    border: 1px solid #ddd; 
+    padding: 12px 8px; 
+    text-align: left; 
+}
+th { 
+    background-color: #007bff;
+    color: white;
+}
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+/* Estilos para o botão de abrir Modal */
+#open-modal-btn { 
+    padding: 10px 15px; 
+    background-color: #28a745; 
+    color: white; 
+    border: none; 
+    cursor: pointer; 
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 16px;
+}
+#open-modal-btn:hover { 
+    background-color: #1e7e34; 
+}
+/* Estilos gerais do formulário */
+input[type="text"], input[type="number"], select { 
+    padding: 10px; 
+    margin: 5px 0 15px 0; 
+    display: block; 
+    width: 98%; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+button[type="submit"] { 
+    padding: 10px 15px; 
+    background-color: #007bff; 
+    color: white; 
+    border: none; 
+    cursor: pointer; 
+    border-radius: 5px;
+}
+button[type="submit"]:hover { 
+    background-color: #0056b3; 
+}
+.message { 
+    margin-top: 15px; 
+    padding: 10px; 
+    border-radius: 4px; 
+    font-weight: bold;
+}
+.success { 
+    background-color: #d4edda; 
+    color: #155724; 
+}
+.error { 
+    background-color: #f8d7da; 
+    color: #721c24; 
+}
+/* Estilos para a célula de ações */
+td:last-child {
+    white-space: nowrap; /* Impede a quebra de linha dos botões */
+    text-align: center;
+}
+
+/* Estilo para os botões de ação */
+.action-btn {
+    padding: 5px 8px;
+    margin: 2px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s;
+}
+
+/* Cores específicas */
+.advance-btn {
+    background-color: #ffc107; /* Amarelo */
+    color: #333;
+}
+.advance-btn:hover {
+    background-color: #e0a800;
+}
+
+.edit-btn {
+    background-color: #17a2b8; /* Azul claro */
+    color: white;
+}
+.edit-btn:hover {
+    background-color: #117a8b;
+}
+
+.delete-btn {
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+}
+.delete-btn:hover {
+    background-color: #bd2130;
+}
