@@ -1,5 +1,9 @@
 package com.ordemDeServico.Service;
 
+import com.ordemDeServico.Exceptions.NotExistException;
+import com.ordemDeServico.Exceptions.RegraDeNegocioVioladaException;
+import com.ordemDeServico.Exceptions.UnauthorizedAccessException;
+import com.ordemDeServico.Service.Event.OrdemServicoDeletada;
 import com.ordemDeServico.Service.Event.OrdemServicoStatusAtualizadoEvent;
 import com.ordemDeServico.Repository.OrdemServicoRepository;
 import com.ordemDeServico.Repository.UsuarioRepository;
@@ -7,11 +11,17 @@ import com.ordemDeServico.model.OrdemServico;
 import com.ordemDeServico.model.Usuario;
 import com.ordemDeServico.model.enums.StatusOS;
 import com.ordemDeServico.model.enums.UserRoles;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
+import org.apache.el.lang.ELArithmetic;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -24,29 +34,10 @@ public class OrdemDeServicoService {
     private final UsuarioRepository usuarioRepository;
     private final ApplicationEventPublisher eventPublisher;
 
-    // --- CRIAR ---
-    public OrdemServico criar(String criadorIdString, OrdemServico request) {
-
-        // 1. Converte o ID da URL (String) para Long (se o ID do seu usuário for Long)
-        Long criadorId = Long.valueOf(criadorIdString);
-
-        // 2. Busca o objeto Usuario (Criador) usando o ID da URL
-        Usuario criador = usuarioRepository.findById(Integer.valueOf(criadorIdString))
-                .orElseThrow(() -> new RuntimeException("Criador não encontrado"));
-
-        // 3. 🚨 RESOLUÇÃO DO NPE: Anexa o objeto Usuario ao request
-        request.setCriador(criador);
-
-        // --- O restante da sua lógica de criação continua, mas simplificada ---
-
-        // Busca do executor (opcional) - Mantenha sua lógica original aqui
+    public OrdemServico criar(OrdemServico request) {
+        Object criador = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        request.setCriador((Usuario) criador);
         Usuario executor = null;
-        if (request.getExecutor() != null) {
-            // ... (sua lógica para buscar o executor) ...
-            // Note que você precisará usar o ID que está no request.getExecutor().getId()
-        }
-
-        // Se você estiver usando o construtor @Builder, ajuste a lógica:
         OrdemServico nova = OrdemServico.builder()
                 .data_criacao(LocalDateTime.now())
                 .descricao(request.getDescricao())
@@ -54,54 +45,51 @@ public class OrdemDeServicoService {
                 .categoria(request.getCategoria())
                 .prioridade(request.getPrioridade())
                 .status(StatusOS.ABERTO)
-                .criador(criador) // <--- Garante que o criador está aqui
+                .criador((Usuario) criador) // <--- Garante que o criador está aqui
                 .executor(executor)
                 .build();
-
         return repository.save(nova);
     }
 
     // --- ATUALIZAR ---
-    public OrdemServico atualizar(int id, OrdemServico request) {
-        OrdemServico existente = buscarPorId(id);
+    public OrdemServico atualizar(int id,OrdemServico request) {
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        StatusOS statusAntigo = existente.getStatus();
+        OrdemServico osDoBanco = repository.findById(id)
+                .orElseThrow(() -> new NotExistException("A OS nao existe."));
 
-        // Atualiza campos normais
-        existente.setDescricao(request.getDescricao());
-        existente.setTitulo(request.getTitulo());
-        existente.setCategoria(request.getCategoria());
-        existente.setPrioridade(request.getPrioridade());
+        Integer idOriginal = osDoBanco.getCriador().getId();
+        Integer idLogado = usuario.getId();
 
-        // Atualiza CRIADOR (obrigatório)
-        Usuario criador = usuarioRepository.findById(request.getCriador().getId())
-                .orElseThrow(() -> new RuntimeException("Criador não encontrado"));
-        existente.setCriador(criador);
-
-        // Atualiza EXECUTOR (opcional)
-        if (request.getExecutor() != null) {
-            Usuario executor = usuarioRepository.findById(request.getExecutor().getId())
-                    .orElseThrow(() -> new RuntimeException("Executor não encontrado"));
-            existente.setExecutor(executor);
+        if (usuario.getRole() == UserRoles.EXECUTOR) {
+            osDoBanco.setExecutor(usuario);
+            osDoBanco.setStatus(request.getStatus());
+            osDoBanco.setPrioridade(request.getPrioridade());
+            osDoBanco.setCategoria(request.getCategoria());
+            osDoBanco.setTitulo(request.getTitulo());
+            osDoBanco.setDescricao(request.getDescricao());
+        } else {
+            if (!idOriginal.equals(idLogado)) {
+                throw new UnauthorizedAccessException("Acesso Negado. Você não criou esta OS.");
+            }
+            osDoBanco.setTitulo(request.getTitulo());
+            osDoBanco.setDescricao(request.getDescricao());
         }
-
-        // Atualiza status caso tenha vindo na requisição
-        if (request.getStatus() != null) {
-            existente.setStatus(request.getStatus());
-        }
-
-        OrdemServico salva = repository.save(existente);
-
-        // Dispara evento SOMENTE SE o status mudou
-        if (salva.getStatus() != statusAntigo) {
-            eventPublisher.publishEvent(new OrdemServicoStatusAtualizadoEvent(salva));
-        }
-
-        return salva;
+   return  repository.save(osDoBanco);
     }
-
     // --- LISTAR ---
     public List<OrdemServico> listar() {
+        Object user = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if( user instanceof Usuario usuarioLogado) {
+            String role = usuarioLogado.getAuthority().toString();
+            if(role.equals("EXECUTOR")){
+                return repository.findParaExecutor(((Usuario) user).getId());
+            } else if (role.equals("CLIENTE")){
+                return repository.findAllByCriadorId((long) usuarioLogado.getId());
+            }
+            return Collections.EMPTY_LIST;
+        }
+
         return repository.findAll();
     }
 
@@ -112,48 +100,63 @@ public class OrdemDeServicoService {
     }
 
     // --- DELETAR ---
-    public void deletar(int osId, int executorId) {
+    public void deletar(int osId) {
+        Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        OrdemServico os = repository.findById(osId)
+                .orElseThrow(() -> new NotExistException("Ordem de Serviço não encontrada."));
 
-        // 1. VERIFICAÇÃO DE AUTORIZAÇÃO MANUAL
-        Usuario executor = userService.buscarPorId(executorId);
+        Integer idCriadorOS = os.getCriador().getId();
+        Integer userId = usuario.getId();
 
-        // Regra: Somente o EXECUTOR pode deletar
-        if (executor.getRole() != UserRoles.EXECUTOR) {
-            throw new RuntimeException("Acesso Negado. Somente o EXECUTOR pode deletar uma OS.");
+        if(usuario.getRole() == UserRoles.EXECUTOR){
+            if (os.getStatus() != StatusOS.CONCLUIDO) {
+                throw new RegraDeNegocioVioladaException("A Ordem de serviço deve está concluida para ser deletada.");
+            }
         }
-        if (repository.getById(osId).getStatus() != StatusOS.CONCLUIDO){
-            throw new RuntimeException("A Ordem de serviço deve está concluida para ser deletada.");
+
+        if(usuario.getRole() == UserRoles.CLIENTE){
+            if (!idCriadorOS.equals(userId)){
+                throw new UnauthorizedAccessException("Acesso Negado.");
+            }
+            if(os.getStatus() != StatusOS.ABERTO){
+                throw new RegraDeNegocioVioladaException("Acesso Negado.");
+            }
+
         }
-
-
+        eventPublisher.publishEvent(new OrdemServicoDeletada(os));
         repository.deleteById(osId);
     }
 
-    public OrdemServico avancarStatus(Integer osId, Integer executorId) {
 
-        // 1. VERIFICAÇÃO DE AUTORIZAÇÃO MANUAL
-        Usuario executor = userService.buscarPorId(executorId);
+        public OrdemServico avancarStatus(Integer osId) {
+            Usuario usuario = (Usuario) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (usuario.getRole() != UserRoles.EXECUTOR) {
+                throw new UnauthorizedAccessException("Acesso Negado. Somente o EXECUTOR pode avançar o status da OS.");
+            }
+            OrdemServico os = buscarPorId(osId);
+            StatusOS statusAtual = os.getStatus();
+            Integer idDoUser = usuario.getId();
+            if (os.getStatus() != StatusOS.ABERTO){
+                if(os.getExecutor() != null && !idDoUser.equals((Integer) os.getExecutor().getId())){
+                    throw new UnauthorizedAccessException("Acesso Negado. O Executor da os é " + os.getExecutor().getNome() + ".");
+                }
+            }
+            StatusOS proximoStatus;
+            try {
+                int proximoOrdinal = statusAtual.ordinal() + 1;
+                proximoStatus = StatusOS.values()[proximoOrdinal];
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new RuntimeException("A Ordem de Serviço já está no último status possível.");
+            }
 
-        // Verifica se o usuário tem a role EXECUTOR
-        if (executor.getRole() != UserRoles.EXECUTOR) {
-            // Lança uma exceção de acesso negado ou regra de negócio violada
-            throw new RuntimeException("Acesso Negado. Somente o EXECUTOR pode avançar o status da OS.");
+            if(os.getExecutor() == null) {
+                os.setExecutor(usuario);
+            }
+            eventPublisher.publishEvent(new OrdemServicoStatusAtualizadoEvent(os));
+            // 3. Atualiza e Salva
+            os.setStatus(proximoStatus);
+            return repository.save(os);
         }
 
-        // 2. LÓGICA DE NEGÓCIO (Avançar Status)
-        OrdemServico os = buscarPorId(osId);
-        StatusOS statusAtual = os.getStatus();
 
-        StatusOS proximoStatus;
-        try {
-            int proximoOrdinal = statusAtual.ordinal() + 1;
-            proximoStatus = StatusOS.values()[proximoOrdinal];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new RuntimeException("A Ordem de Serviço já está no último status possível.");
-        }
-
-        // 3. Atualiza e Salva
-        os.setStatus(proximoStatus);
-        return repository.save(os);
-    }
 }

@@ -1,117 +1,169 @@
+/* styles.css - TEMA DARK MODE */
+
 body { 
-    font-family: Arial, sans-serif; 
-    margin: 20px; 
-    background-color: #f4f4f4;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0; 
+    /* Fundo Preto Fosco */
+    background-color: #121212; 
+    color: #e0e0e0;
+    min-height: 100vh;
 }
-h1, h2 { 
-    color: #333; 
-    border-bottom: 2px solid #ccc; 
-    padding-bottom: 5px; 
+
+/* Container Principal Centralizado */
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    /* Fundo Cinza Muito Escuro (Card) */
+    background: #1e1e1e; 
+    padding: 30px;
+    border-radius: 12px;
+    /* Sombra escura para profundidade */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    border: 1px solid #333;
 }
+
+/* Cabeçalho */
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #333;
+    padding-bottom: 15px;
+}
+
+/* Títulos */
+h1 { 
+    color: #ffffff; 
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+h2 { 
+    color: #b0bec5; /* Cinza azulado claro */
+    font-size: 1.4rem; 
+    margin: 20px 0 15px 0; 
+    border-bottom: none;
+    font-weight: 400;
+}
+
+/* --- TABELA DARK --- */
 table { 
     width: 100%; 
-    border-collapse: collapse; 
+    border-collapse: separate; 
+    border-spacing: 0; 
     margin-top: 20px; 
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px #333;
 }
+
 th, td { 
-    border: 1px solid #ddd; 
-    padding: 12px 8px; 
+    padding: 16px 12px; 
     text-align: left; 
+    border-bottom: 1px solid #333;
 }
+
 th { 
-    background-color: #007bff;
-    color: white;
+    /* AZUL MARINHO (Navy Blue) */
+    background-color: #0d253f; 
+    color: #ffffff;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
 }
-tr:nth-child(even) {
-    background-color: #f9f9f9;
+
+td {
+    color: #cfcfcf;
 }
-/* Estilos para o botão de abrir Modal */
-#open-modal-btn { 
-    padding: 10px 15px; 
-    background-color: #28a745; 
-    color: white; 
-    border: none; 
+
+/* Efeito Zebra Dark (Linhas alternadas) */
+tr:nth-child(even) { background-color: #252525; }
+tr:hover { background-color: #303030; transition: background 0.2s; }
+
+/* Ações (Alinhamento dos botões) */
+td:last-child { 
+    text-align: center; 
+    white-space: nowrap; 
+}
+
+/* --- BOTÕES GERAIS --- */
+button { 
     cursor: pointer; 
-    margin-bottom: 20px;
-    border-radius: 5px;
-    font-size: 16px;
+    transition: all 0.2s; 
+    border: none; 
+    font-family: inherit;
+}
+
+/* Botão Criar (Verde Sóbrio) */
+#open-modal-btn { 
+    padding: 12px 24px; 
+    background-color: #2e7d32; 
+    color: white; 
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    float: right;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 #open-modal-btn:hover { 
-    background-color: #1e7e34; 
+    background-color: #43a047; 
+    transform: translateY(-2px); 
 }
-/* Estilos gerais do formulário */
-input[type="text"], input[type="number"], select { 
-    padding: 10px; 
-    margin: 5px 0 15px 0; 
-    display: block; 
-    width: 98%; 
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-button[type="submit"] { 
-    padding: 10px 15px; 
-    background-color: #007bff; 
-    color: white; 
-    border: none; 
-    cursor: pointer; 
-    border-radius: 5px;
-}
-button[type="submit"]:hover { 
-    background-color: #0056b3; 
-}
-.message { 
-    margin-top: 15px; 
-    padding: 10px; 
-    border-radius: 4px; 
+
+/* --- BOTÃO LOGOUT FLUTUANTE (Canto Inferior Direito) --- */
+.logout-floating {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #c62828; /* Vermelho escuro */
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px; /* Redondo */
     font-weight: bold;
-}
-.success { 
-    background-color: #d4edda; 
-    color: #155724; 
-}
-.error { 
-    background-color: #f8d7da; 
-    color: #721c24; 
-}
-/* Estilos para a célula de ações */
-td:last-child {
-    white-space: nowrap; /* Impede a quebra de linha dos botões */
-    text-align: center;
+    font-size: 1rem;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.7);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #b71c1c;
 }
 
-/* Estilo para os botões de ação */
-.action-btn {
-    padding: 5px 8px;
-    margin: 2px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: background-color 0.3s;
+.logout-floating:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.9);
 }
 
-/* Cores específicas */
-.advance-btn {
-    background-color: #ffc107; /* Amarelo */
-    color: #333;
-}
-.advance-btn:hover {
-    background-color: #e0a800;
-}
-
-.edit-btn {
-    background-color: #17a2b8; /* Azul claro */
-    color: white;
-}
-.edit-btn:hover {
-    background-color: #117a8b;
+/* --- BOTÕES DE AÇÃO NA TABELA --- */
+.action-btn { 
+    padding: 6px 10px; 
+    margin: 0 3px; 
+    border-radius: 4px; 
+    font-size: 14px;
 }
 
-.delete-btn {
-    background-color: #dc3545; /* Vermelho */
-    color: white;
+.advance-btn { 
+    background-color: #ff8f00; /* Laranja */
+    color: #121212; 
+    font-weight: bold;
+} 
+.advance-btn:hover { background-color: #ffb300; }
+
+.delete-btn { 
+    background-color: #b71c1c; /* Vermelho */
+    color: white; 
 }
-.delete-btn:hover {
-    background-color: #bd2130;
+.delete-btn:hover { background-color: #e53935; }
+
+/* Mensagens de erro na tabela */
+.error { color: #ef5350 !important; font-weight: bold; }
+.edit-btn { 
+    background-color: #0288d1; /* Azul bonito */
+    color: white; 
 }
+.edit-btn:hover { background-color: #039be5; }

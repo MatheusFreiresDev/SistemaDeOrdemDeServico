@@ -4,6 +4,7 @@ import com.ordemDeServico.Service.OrdemDeServicoService;
 import com.ordemDeServico.Service.UserService;
 import com.ordemDeServico.model.OrdemServico;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,9 +18,8 @@ public class OrdemServicoFacade {
 
     // OrdemServicoFacade.java (Exemplo)
 
-    public OrdemServico criarOS(String criadorId, OrdemServico request) {
-        // 🚨 MUDANÇA: Repassa o ID do criador para o Service
-        return ordemService.criar(criadorId, request);
+    public OrdemServico criarOS(OrdemServico request) {
+        return ordemService.criar(request);
     }
 
     public List<OrdemServico> listarOS() {
@@ -30,17 +30,17 @@ public class OrdemServicoFacade {
         return ordemService.buscarPorId(id);
     }
 
-    public OrdemServico atualizarOS(int id, OrdemServico request) {
-        return ordemService.atualizar(id, request);
+    public OrdemServico atualizarOS( int id, OrdemServico request) {
+        return ordemService.atualizar(id,request);
     }
 
-    public void deletarOS(int id, int executorId) {
+    public void deletarOS(int idDaOs) {
         // Repassa a responsabilidade de verificação e deleção para o Service
-        ordemService.deletar(id, executorId);
+        ordemService.deletar(idDaOs);
     }
 
-    public OrdemServico avancarStatusOS(Integer id, Integer executorId) {
+    public OrdemServico avancarStatusOS(Integer id) {
         // Repassa a responsabilidade de verificar a Role e avançar o status
-        return ordemService.avancarStatus(id, executorId);
+        return ordemService.avancarStatus(id);
     }
 }

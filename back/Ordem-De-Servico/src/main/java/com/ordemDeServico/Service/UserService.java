@@ -1,7 +1,10 @@
 package com.ordemDeServico.Service;
 
 import com.ordemDeServico.Repository.UsuarioRepository;
+import com.ordemDeServico.Service.Event.OrdemServicoStatusAtualizadoEvent;
+import com.ordemDeServico.Service.Event.UsuarioCriado;
 import com.ordemDeServico.model.Usuario;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,15 +12,18 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-
+    private final ApplicationEventPublisher eventPublisher;
     private final UsuarioRepository usuarioRepository;
 
-    public UserService(UsuarioRepository usuarioRepository) {
+    public UserService(ApplicationEventPublisher eventPublisher, UsuarioRepository usuarioRepository) {
+        this.eventPublisher = eventPublisher;
         this.usuarioRepository = usuarioRepository;
     }
 
     public Usuario criar(Usuario usuario) {
-        return usuarioRepository.save(usuario);
+        Usuario usuarioCriado = usuarioRepository.save(usuario);
+        eventPublisher.publishEvent(new UsuarioCriado(usuario));
+        return usuario;
     }
 
     public Usuario buscarPorId(int id) {

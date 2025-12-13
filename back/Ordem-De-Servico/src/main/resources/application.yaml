@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/ordem_servico_bd
     username: root
-    password: 1234
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   flyway:
@@ -19,10 +19,27 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
   mail:
-      host: smtp.gmail.com
-      port: 587
-      username: matheusfreiress11@gmail.com
-      password: mzii qcbn gplp ayjh
-      properties:
-        mail.smtp.auth: true
-        mail.smtp.starttls.enable: true
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL}
+    password: ${EMAIL_PASS}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+# Configuração do Token JWT
+api:
+  security:
+    token:
+      secret: ${CODE_SECURITY}
+
+# Configuração do Swagger para corrigir o Erro 500
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+  # IMPORTANTE: Isso impede que o Swagger tente ler classes de segurança e quebre
+  packages-to-scan: com.ordemDeServico.Controllers
+  paths-to-match: /**

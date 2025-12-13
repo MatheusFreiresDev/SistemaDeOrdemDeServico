@@ -1,63 +1,88 @@
 package com.ordemDeServico.Controllers;
 
 import com.ordemDeServico.Facade.OrdemServicoFacade;
-import com.ordemDeServico.Service.OrdemDeServicoService;
 import com.ordemDeServico.model.OrdemServico;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/os")
 @RequiredArgsConstructor
+@Tag(name = "Gestão de Ordens de Serviço", description = "Endpoints para criar, visualizar, editar e gerenciar o ciclo de vida das OS.")
 public class OrdemServicoController {
 
     private final OrdemServicoFacade facade;
 
-    @PostMapping("/{criador}")
-    public ResponseEntity<OrdemServico> criar(
-            @PathVariable String criador, // <--- Continua pegando da URL
-            @RequestBody OrdemServico request) {
-
-        return ResponseEntity.status(201).body(facade.criarOS(criador, request)); // Use 201 Created
+    @Operation(summary = "Criar nova OS", description = "Cria uma nova ordem de serviço com status inicial 'ABERTO'.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "OS criada com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou campos obrigatórios faltando."),
+            @ApiResponse(responseCode = "403", description = "Usuário não autenticado.")
+    })
+    @PostMapping
+    public ResponseEntity<OrdemServico> criar(@RequestBody OrdemServico request) {
+        return ResponseEntity.status(201).body(facade.criarOS(request));
     }
 
+    @Operation(summary = "Listar todas as OS", description = "Retorna a lista de OS baseada no perfil: ADMIN vê tudo, CLIENTE vê as suas, EXECUTOR vê as suas + as disponíveis.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso.")
+    })
     @GetMapping
     public ResponseEntity<List<OrdemServico>> listar() {
         return ResponseEntity.ok(facade.listarOS());
     }
 
+    @Operation(summary = "Buscar OS por ID", description = "Retorna os detalhes de uma OS específica.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OS encontrada."),
+            @ApiResponse(responseCode = "404", description = "OS não encontrada."),
+            @ApiResponse(responseCode = "403", description = "Acesso negado (Você não é o dono ou executor desta OS).")
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<OrdemServico> buscar(
-            @PathVariable int id) {
-
+    public ResponseEntity<OrdemServico> buscar(@PathVariable int id) {
         return ResponseEntity.ok(facade.buscarOSPorId(id));
     }
 
+    @Operation(summary = "Atualizar OS", description = "Atualiza dados da OS. Clientes só podem editar se a OS ainda estiver ABERTA.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OS atualizada com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Regra de negócio violada (ex: tentar editar OS já finalizada)."),
+            @ApiResponse(responseCode = "404", description = "OS não encontrada.")
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<OrdemServico> atualizar(
-            @PathVariable int id,
-            @RequestBody OrdemServico    request) {
-
-        return ResponseEntity.ok(facade.atualizarOS(id, request));
+    public ResponseEntity<?> atualizar(@RequestBody OrdemServico ordemServico, @PathVariable int id) {
+        return ResponseEntity.ok(facade.atualizarOS(id, ordemServico));
     }
 
-    @DeleteMapping("/{id}/{executorId}") // Adiciona o ID do usuário que deleta
-    public ResponseEntity<Void> deletar(
-            @PathVariable int id, // ID da OS a ser deletada
-            @PathVariable int executorId) { // ID do usuário executor
-
-        facade.deletarOS(id, executorId); // Atualiza a chamada na facade
+    @Operation(summary = "Deletar OS", description = "Remove uma OS do sistema. Requer permissão adequada.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "OS deletada com sucesso (Sem conteúdo)."),
+            @ApiResponse(responseCode = "403", description = "Acesso negado."),
+            @ApiResponse(responseCode = "404", description = "OS não encontrada.")
+    })
+    @DeleteMapping("/{idDaOs}")
+    public ResponseEntity<Void> deletar(@PathVariable int idDaOs) {
+        facade.deletarOS(idDaOs);
         return ResponseEntity.noContent().build();
     }
-        @PutMapping("/{id}/avancar-status/{executorId}") // Novo endpoint com o ID do Executor
-        public ResponseEntity<OrdemServico> avancarStatus(
-                @PathVariable int id, // ID da OS
-                @PathVariable int executorId) { // ID do usuário que tenta executar a ação
 
-            OrdemServico osAtualizada = facade.avancarStatusOS(id, executorId);
-
-            return ResponseEntity.ok(osAtualizada);
-        }
+    @Operation(summary = "Avançar Status da OS", description = "Permite ao EXECUTOR avançar o status (ABERTO -> EM EXECUÇÃO -> CONCLUÍDO).")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Status avançado com sucesso."),
+            @ApiResponse(responseCode = "400", description = "Não é possível avançar (ex: já está CONCLUÍDO)."),
+            @ApiResponse(responseCode = "403", description = "Apenas Executores podem realizar esta ação.")
+    })
+    @PutMapping("/{id}/avancar-status")
+    public ResponseEntity<OrdemServico> avancarStatus(@PathVariable int id) {
+        OrdemServico osAtualizada = facade.avancarStatusOS(id);
+        return ResponseEntity.ok(osAtualizada);
+    }
 }
