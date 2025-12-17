@@ -27,8 +27,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrdemDeServicoService {
-
-
     private final UserService userService;
     private final OrdemServicoRepository repository;
     private final UsuarioRepository usuarioRepository;
@@ -45,7 +43,7 @@ public class OrdemDeServicoService {
                 .categoria(request.getCategoria())
                 .prioridade(request.getPrioridade())
                 .status(StatusOS.ABERTO)
-                .criador((Usuario) criador) // <--- Garante que o criador está aqui
+                .criador((Usuario) criador)
                 .executor(executor)
                 .build();
         return repository.save(nova);
@@ -113,7 +111,6 @@ public class OrdemDeServicoService {
                 throw new RegraDeNegocioVioladaException("A Ordem de serviço deve está concluida para ser deletada.");
             }
         }
-
         if(usuario.getRole() == UserRoles.CLIENTE){
             if (!idCriadorOS.equals(userId)){
                 throw new UnauthorizedAccessException("Acesso Negado.");
@@ -153,7 +150,6 @@ public class OrdemDeServicoService {
                 os.setExecutor(usuario);
             }
             eventPublisher.publishEvent(new OrdemServicoStatusAtualizadoEvent(os));
-            // 3. Atualiza e Salva
             os.setStatus(proximoStatus);
             return repository.save(os);
         }

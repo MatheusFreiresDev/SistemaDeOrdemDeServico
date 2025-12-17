@@ -1,5 +1,6 @@
 package com.ordemDeServico.Service;
 
+import com.ordemDeServico.Exceptions.NotExistException;
 import com.ordemDeServico.Repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,6 @@ public class UserDetailsService implements org.springframework.security.core.use
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + email));
+                .orElseThrow(() -> new NotExistException("Usuário não encontrado: " + email));
     }
 }

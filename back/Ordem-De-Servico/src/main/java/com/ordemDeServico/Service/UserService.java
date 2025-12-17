@@ -1,10 +1,13 @@
 package com.ordemDeServico.Service;
 
+import com.ordemDeServico.Exceptions.EmailRegisteredException;
 import com.ordemDeServico.Repository.UsuarioRepository;
 import com.ordemDeServico.Service.Event.OrdemServicoStatusAtualizadoEvent;
 import com.ordemDeServico.Service.Event.UsuarioCriado;
 import com.ordemDeServico.model.Usuario;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +24,11 @@ public class UserService {
     }
 
     public Usuario criar(Usuario usuario) {
+        if(usuarioRepository.findByEmail(usuario.getEmail()).isPresent()){
+            throw new EmailRegisteredException("Email ja cadastrado.");
+        }
+        String encryptedPassword = new BCryptPasswordEncoder().encode(usuario.getPassword());
+        usuario.setSenha(encryptedPassword);
         Usuario usuarioCriado = usuarioRepository.save(usuario);
         eventPublisher.publishEvent(new UsuarioCriado(usuario));
         return usuario;

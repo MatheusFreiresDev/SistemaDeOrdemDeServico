@@ -22,7 +22,7 @@ public class TokenService {
             return JWT.create()
                     .withIssuer("api-OS")
                     .withSubject(user.getUsername())
-                    .withClaim("userId", user.getId()) // <--- Adicione esta linha
+                    .withClaim("userId", user.getId())
                     .withClaim("role", user.getRole().toString())
                     .withClaim("nome", user.getNome())
                     .withExpiresAt(tokenExperirationDate())
