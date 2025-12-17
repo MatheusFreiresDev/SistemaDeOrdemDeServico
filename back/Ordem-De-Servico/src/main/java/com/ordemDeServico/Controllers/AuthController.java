@@ -28,7 +28,6 @@ import java.util.ArrayList;
 @Tag(name = "Autenticação", description = "Endpoints responsáveis pelo Login e Registro de novos usuários.")
 public class AuthController {
 
-    // O Lombok (@RequiredArgsConstructor) vai injetar isso automaticamente se forem 'final'
     private final AuthenticationManager authenticationManager;
     private final UsuarioRepository usuarioRepository;
     private final TokenService tokenService;
@@ -41,21 +40,15 @@ public class AuthController {
     })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest){
-        // Verificação manual simples (opcional, o authenticationManager já faz isso)
         if(usuarioRepository.findByEmail(loginRequest.email()).isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email incorreto.");
         }
-
         try {
             var userToken = new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.senha());
             authenticationManager.authenticate(userToken);
-
             Usuario usuario = usuarioRepository.findByEmail(loginRequest.email()).orElseThrow();
             String token = tokenService.GenerateToken(usuario);
-
-            // Mantendo o formato que seu Front-end espera
             return ResponseEntity.ok("Logado Com Sucesso. " + token);
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Falha na autenticação: Credenciais inválidas.");
         }
@@ -68,23 +61,16 @@ public class AuthController {
     })
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-        if(usuarioRepository.findByEmail(request.email()).isPresent()){
-            return ResponseEntity.badRequest().body("Email já registrado no sistema.");
-        }
-
-        String encryptedPassword = new BCryptPasswordEncoder().encode(request.senha());
-
         Usuario newUser = Usuario.builder()
                 .email(request.email())
-                .senha(encryptedPassword)
-                .role(UserRoles.CLIENTE) // Padrão: Todo registro público vira CLIENTE
+                .senha(request.senha())
+                .role(UserRoles.CLIENTE)
                 .nome(request.nome())
-                .ordensExecutadas(new ArrayList<>())
+                 .ordensExecutadas(new ArrayList<>())
                 .ordensCriadas(new ArrayList<>())
                 .build();
 
         userService.criar(newUser);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(request.nome() + ", obrigado por se juntar com a gente!");
     }
 }
