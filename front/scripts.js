@@ -163,16 +163,10 @@ async function handleLogin(event) {
 
         const responseText = await response.text();
 
-        if (response.ok) {
-            let token = responseText;
-            // Limpa o token se vier com texto extra "Logado com sucesso..."
-            if (token.includes("Logado")) {
-                const parts = token.split(':');
-                token = parts.length > 1 ? parts[1].trim() : token.replace('Logado Com Sucesso.', '').trim();
-            }
-
-            localStorage.setItem('authToken', token); 
-            window.location.href = 'index.html'; 
+       if (response.ok) {
+    const data = JSON.parse(responseText);
+    localStorage.setItem('authToken', data.token); 
+    window.location.href = 'index.html';
         } else {
             if(messageArea) {
                 // Tenta ler o erro do backend

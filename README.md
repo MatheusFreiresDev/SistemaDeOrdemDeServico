@@ -1,103 +1,191 @@
-# 🛠️ Sistema de Gestão de Ordens de Serviço (API RESTful)
+# 🛠️ Sistema de Gestão de Ordens de Serviço
 
-Este projeto consiste no desenvolvimento de uma **API RESTful robusta** para o gerenciamento de Ordens de Serviço, focada em boas práticas de engenharia de software, segurança com Spring Security e arquitetura em camadas.
+API RESTful para gerenciamento de Ordens de Serviço com autenticação JWT, controle de acesso por perfis e notificações automáticas por e-mail.
 
-O projeto inclui também uma interface **Frontend leve (Vanilla JS)** desenvolvida exclusivamente para demonstrar o consumo dos endpoints, o tratamento de CORS e o fluxo de autenticação via Token JWT.
-
-![Java](https://img.shields.io/badge/Java-17-orange)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.3.6-green)
-![Security](https://img.shields.io/badge/Spring_Security-JWT-red)
-![Database](https://img.shields.io/badge/MySQL-Flyway-blue)
-![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-brightgreen)
-
-## 🚀 Tecnologias Utilizadas
-
-### Backend (Core)
-* **Linguagem:** Java 17
-* **Framework:** Spring Boot 3.3.6
-* **Segurança:** Spring Security + JWT (JSON Web Token) para autenticação Stateless.
-* **Persistência:** Spring Data JPA & Hibernate.
-* **Banco de Dados:** MySQL.
-* **Migração de Dados:** Flyway (Versionamento de Schema).
-* **Documentação:** Springdoc OpenAPI (Swagger UI).
-* **E-mail:** Spring Mail (Envio de notificações automáticas).
-* **Arquitetura:** DTOs, Service Layer, Repository Pattern, Event Listeners (Observer).
-
-### Frontend (Cliente de Consumo)
-* **Tecnologias:** HTML5, CSS3 e JavaScript (Vanilla).
-* **Objetivo:** Prova de conceito (PoC) para validar a integração com a API, configurações de CORS e passagem de Bearer Tokens nos headers.
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-17-orange?style=for-the-badge&logo=openjdk&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring_Boot-3.3.6-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Spring_Security-JWT-red?style=for-the-badge&logo=springsecurity&logoColor=white"/>
+  <img src="https://img.shields.io/badge/MySQL-Flyway-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Swagger-OpenAPI-85EA2D?style=for-the-badge&logo=swagger&logoColor=black"/>
+</p>
 
 ---
 
-## ⚙️ Funcionalidades Principais
+## 🔗 Links
 
-1.  **Autenticação e Segurança (JWT):**
-    * Registro e Login de usuários com criptografia de senha (BCrypt).
-    * Controle de acesso baseado em funções (Roles: CLIENTE, EXECUTOR, ADMIN).
-    * Proteção de rotas via Filtro de Segurança personalizado.
-
-2.  **Gestão de Ordens de Serviço (CRUD):**
-    * Abertura de novas OS com definição de prioridade e categoria.
-    * Atualização de status (ABERTO -> EM EXECUÇÃO -> CONCLUÍDO).
-    * Listagem, busca e exclusão de ordens.
-
-3.  **Sistema de Notificações:**
-    * Envio automático de e-mails para o cliente sempre que o status da sua OS é alterado.
-    * Implementação desacoplada utilizando Eventos e Listeners do Spring.
-
-4.  **Documentação Interativa:**
-    * API 100% documentada e testável via Swagger UI.
+| | |
+|---|---|
+| 🌐 **Frontend** | `[em breve]` |
+| 📄 **Swagger UI** | `[em breve]` |
+| 💻 **Repositório** | [github.com/MatheusFreiresDev/SistemaDeOrdemDeServico](https://github.com/MatheusFreiresDev/SistemaDeOrdemDeServico) |
 
 ---
 
-## 📖 Documentação da API (Swagger)
+## 📌 Sobre o Projeto
 
-Com a aplicação rodando, acesse a documentação completa em:
+O projeto consiste em uma **API RESTful** completa para o gerenciamento do ciclo de vida de Ordens de Serviço, com foco em boas práticas de engenharia de software.
 
-👉 **[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)**
+O sistema possui três perfis de usuário com permissões distintas:
 
-Aqui você poderá ver os schemas JSON de entrada e saída e testar as requisições em tempo real.
-
----
-
-## 🖥️ Como testar o Frontend
-
-O frontend não requer instalação de pacotes (npm/yarn), pois foi feito em JS puro.
-
-1.  Navegue até a pasta `front` do projeto.
-2.  Abra o arquivo `index.html` (ou `login.html`) diretamente no seu navegador.
-3.  **Fluxo de Teste:**
-    * Crie uma conta na tela de registro.
-    * Faça login (o Token JWT será salvo no `localStorage`).
-    * Você será redirecionado para o painel principal onde poderá interagir com a API.
+- **CLIENTE** — abre e acompanha suas próprias OS
+- **EXECUTOR** — visualiza, aceita e avança o status das OS
+- **ADMIN** — acesso total ao sistema
 
 ---
 
-## 📂 Estrutura do Projeto
-```text
-Ordem-De-Servico
-├── src
-│   ├── main
-│   │   ├── java/com/ordemDeServico
-│   │   │   ├── ConfigSecurity  # Segurança (JWT/Filtros)
-│   │   │   ├── Controllers     # Endpoints da API
-│   │   │   ├── DTOS            # Dados de Entrada/Saída
-│   │   │   ├── Exceptions      # Tratamento de Erros
-│   │   │   ├── model           # Entidades do Banco
-│   │   │   ├── Repository      # Acesso ao Banco (JPA)
-│   │   │   └── Service         # Lógica de Negócio
-│   │   └── resources
-│   │       ├── db/migration    # Scripts do Flyway
-│   │       └── application.yml # Configuração
-│```
-└── front                       # Cliente Web (Teste)
+## 🚀 Tecnologias
+
+### Backend
+| Tecnologia | Uso |
+|---|---|
+| Java 17 + Spring Boot 3.3.6 | Core da aplicação |
+| Spring Security + JWT | Autenticação stateless |
+| Spring Data JPA + Hibernate | Persistência |
+| MySQL | Banco de dados |
+| Flyway | Versionamento de schema |
+| Springdoc OpenAPI (Swagger) | Documentação interativa |
+| Spring Mail | Notificações por e-mail |
+| Lombok | Redução de boilerplate |
+
+### Frontend
+| Tecnologia | Uso |
+|---|---|
+| HTML5, CSS3, JavaScript (Vanilla) | Interface web |
+
+> O frontend é uma prova de conceito para validar o consumo da API, fluxo de autenticação JWT e tratamento de CORS.
+
+---
+
+## ⚙️ Funcionalidades
+
+### 🔐 Autenticação
+- Registro e login com criptografia BCrypt
+- Geração e validação de tokens JWT
+- Proteção de rotas via filtro de segurança customizado
+
+### 📋 Ordens de Serviço
+- Criação de OS com título, descrição, prioridade e categoria
+- Fluxo de status: `ABERTO` → `EM_EXECUCAO` → `CONCLUIDO`
+- Listagem filtrada por perfil (cada usuário vê apenas o que lhe compete)
+- Edição e exclusão com validação de permissão
+
+### 📧 Notificações
+- E-mail automático ao cliente sempre que o status da sua OS é alterado
+- Implementação desacoplada com **Events e Listeners** do Spring (padrão Observer)
+
+### 📄 Documentação
+- API 100% documentada e testável via Swagger UI
+
+---
+
+## 🗂️ Estrutura do Projeto
 
 ```
+Ordem-De-Servico/
+├── src/main/java/com/ordemDeServico/
+│   ├── configSecurity/     # JWT, filtros e configuração de segurança
+│   ├── controllers/        # Endpoints da API
+│   ├── dtos/               # Objetos de entrada e saída
+│   ├── exceptions/         # Exceções customizadas
+│   ├── facade/             # Camada de orquestração
+│   ├── model/              # Entidades JPA e enums
+│   ├── repository/         # Acesso ao banco (Spring Data JPA)
+│   └── service/            # Lógica de negócio e eventos
+│       ├── event/          # Eventos de domínio
+│       └── listeners/      # Listeners para notificações
+└── src/main/resources/
+    ├── db/migration/       # Scripts Flyway
+    └── application.yaml    # Configuração da aplicação
+```
 
-## 🤝 Contribuição
+---
 
-Sugestões e melhorias são bem-vindas! Sinta-se à vontade para abrir uma *issue* ou enviar um *pull request*.
+## 🔌 Endpoints Principais
+
+| Método | Rota | Descrição | Auth |
+|---|---|---|---|
+| `POST` | `/auth/register` | Registrar novo usuário | ❌ |
+| `POST` | `/auth/login` | Login e geração do JWT | ❌ |
+| `GET` | `/os` | Listar OS (filtrado por perfil) | ✅ |
+| `POST` | `/os` | Criar nova OS | ✅ |
+| `PUT` | `/os/{id}` | Atualizar OS | ✅ |
+| `PUT` | `/os/{id}/avancar-status` | Avançar status da OS | ✅ Executor |
+| `DELETE` | `/os/{id}` | Deletar OS | ✅ |
+
+> Documentação completa e testável no **Swagger UI** após subir a aplicação.
+
+---
+
+## 🖥️ Como Rodar Localmente
+
+### Pré-requisitos
+- Java 17+
+- Maven
+- MySQL
+
+### Configuração
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/MatheusFreiresDev/SistemaDeOrdemDeServico.git
+```
+
+2. Configure o `application.yaml` com suas credenciais do MySQL:
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ordemservico
+    username: seu_usuario
+    password: sua_senha
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+api:
+  security:
+    token:
+      secret: seu_secret_jwt
+```
+
+3. Crie o banco de dados:
+```sql
+CREATE DATABASE ordemservico;
+```
+
+4. Suba a aplicação — o Flyway criará as tabelas automaticamente:
+```bash
+./mvnw spring-boot:run
+```
+
+5. Acesse o Swagger:
+```
+http://localhost:8080/swagger-ui.html
+```
+
+### Frontend
+
+Navegue até a pasta `front/` e abra o `login.html` direto no navegador. Não requer instalação.
+
+---
+
+## 🧪 Testes
+
+```bash
+./mvnw test
+```
+
+---
+
+## 👨‍💻 Autor
+
+**Matheus Freires**
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](www.linkedin.com/in/matheus-freires-pereira-a74580303)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/MatheusFreiresDev)
+
+---
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.

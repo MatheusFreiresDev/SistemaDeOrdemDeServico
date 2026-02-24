@@ -21,9 +21,6 @@ public class OrdemDeServicoApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				// Permite que qualquer origem (seu arquivo HTML local)
-				// acesse todos os endpoints (/**)
-				// Usamos "*" para desenvolvimento local, é o mais simples.
 				registry.addMapping("/**")
 						.allowedOrigins("*")
 						.allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
