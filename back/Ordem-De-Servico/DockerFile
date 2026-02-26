@@ -1,4 +1,4 @@
-it st# Usa a imagem do Maven para compilar a aplicação
+# Usa a imagem do Maven para compilar a aplicação
 FROM maven:3.8.6-eclipse-temurin-17 AS builder
 WORKDIR /app
 COPY . .
