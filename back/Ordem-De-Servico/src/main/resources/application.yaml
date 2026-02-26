@@ -3,8 +3,8 @@ spring:
     name: Ordem-De-Servico
 
   datasource:
-    url: jdbc:mysql://localhost:3306/ordem_servico_bd
-    username: root
+    url: ${DB_URL}
+    username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
