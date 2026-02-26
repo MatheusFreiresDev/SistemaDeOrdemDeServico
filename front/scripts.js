@@ -1,7 +1,7 @@
 // =================================================================
 // CONFIGURAÇÕES GLOBAIS
 // =================================================================
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'https://sistemadeordemdeservico-1.onrender.com';
 const API_URL = `${BASE_URL}/os`; 
 
 // =================================================================
