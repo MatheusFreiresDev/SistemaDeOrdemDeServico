@@ -3,30 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Sistema de OS</title>
+    <title>Login | Sistema OS</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
     <div class="login-container">
         <h1 class="logo-title">Sistema OS</h1>
         <h2 class="form-title">Acesso ao Painel</h2>
-        
-        <form id="loginForm" class="login-form">
+
+        <form id="loginForm" class="login-form" method="post" action="#">
             <div class="input-group">
                 <label for="email">E-mail</label>
                 <input type="email" id="email" name="email" placeholder="Seu e-mail de acesso" required>
             </div>
-            
+
             <div class="input-group">
                 <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" placeholder="Sua senha secreta" required>
+                <input type="password" id="senha" name="senha" placeholder="Sua senha" required>
             </div>
-            
+
             <button type="submit" class="btn primary-btn">Entrar</button>
-            
-            <div id="message" class="message-area" style="margin-top: 15px;"></div>
-            
+
+            <div id="message" class="message-area"></div>
+
             <p class="register-link">
                 Não tem conta? <a href="register.html">Cadastre-se aqui</a>
             </p>
