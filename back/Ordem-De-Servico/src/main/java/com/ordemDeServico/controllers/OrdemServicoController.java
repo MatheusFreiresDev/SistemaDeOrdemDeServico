@@ -28,7 +28,13 @@ public class OrdemServicoController {
     })
     @PostMapping
     public ResponseEntity<OrdemServico> criar(@RequestBody OrdemServico request) {
-        return ResponseEntity.status(201).body(facade.criarOS(request));
+            Usuario usuarioLogado = (Usuario) SecurityContextHolder
+                    .getContext()
+                    .getAuthentication()
+                    .getPrincipal();
+            request.setUsuario(usuarioLogado);
+            return ResponseEntity.status(201).body(facade.criarOS(request));
+        }
     }
 
     @Operation(summary = "Listar todas as OS", description = "Retorna a lista de OS baseada no perfil: ADMIN vê tudo, CLIENTE vê as suas, EXECUTOR vê as suas + as disponíveis.")
