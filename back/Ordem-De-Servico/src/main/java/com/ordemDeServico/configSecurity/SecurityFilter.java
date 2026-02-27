@@ -37,9 +37,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
         String token = recoverToken(request);
-
         if (token != null) {
             try {
                 String email = tokenService.validateToken(token);
@@ -56,17 +54,15 @@ public class SecurityFilter extends OncePerRequestFilter {
                                         null,
                                         usuario.getAuthorities()
                                 );
-
-                        SecurityContextHolder
-                                .getContext()
-                                .setAuthentication(authentication);
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
                 }
 
             } catch (Exception e) {
-                // Token inválido, expirado ou malformado
-                // Não quebra a request
                 SecurityContextHolder.clearContext();
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token inválido ou expirado.");
+                return;
             }
         }
 
