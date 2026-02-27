@@ -3,6 +3,7 @@ package com.ordemDeServico.configSecurity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,32 +24,18 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    // Injeção do filtro de segurança (Atenção: verifique se o StackOverflow foi resolvido injetando via construtor ou no método SecurityFilterChain)
     @Autowired
     SecurityFilter securityFilter;
 
-    // --- CORREÇÃO DE CORS ---
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Permite todas as origens (Desenvolvimento)
         configuration.setAllowedOrigins(List.of("*"));
-
-        // Permite os métodos essenciais: POST, GET, OPTIONS, DELETE, PUT
         configuration.setAllowedMethods(List.of("POST", "GET", "OPTIONS", "DELETE", "PUT"));
-
-        // Permite todos os cabeçalhos (incluindo Authorization para o JWT)
         configuration.setAllowedHeaders(List.of("*"));
-
-        // Usamos a CLASSE CORRETA do pacote org.springframework.web.cors
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
-        // Aplica esta configuração a todos os endpoints
         source.registerCorsConfiguration("/**", configuration);
-
-        // Não é necessário o cast explícito se a classe correta for importada
         return source;
     }
 
@@ -62,6 +49,10 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
