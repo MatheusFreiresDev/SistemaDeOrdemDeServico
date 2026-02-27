@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Gestão de Ordens de Serviço", description = "Endpoints para criar, visualizar, editar e gerenciar o ciclo de vida das OS.")
 public class OrdemServicoController {
+    @Autowired
     OrdemServicoFacade facade;
     @Operation(summary = "Listar todas as OS", description = "Retorna a lista de OS baseada no perfil: ADMIN vê tudo, CLIENTE vê as suas, EXECUTOR vê as suas + as disponíveis.")
     @ApiResponses(value = {
@@ -28,7 +30,11 @@ public class OrdemServicoController {
     public ResponseEntity<List<OrdemServico>> listar() {
         return ResponseEntity.ok(facade.listarOS());
     }
-
+    @Operation(summary = "Criar nova OS")
+    @PostMapping
+    public ResponseEntity<OrdemServico> criar(@RequestBody OrdemServico request) {
+        return ResponseEntity.status(201).body(facade.criarOS(request));
+    }
     @Operation(summary = "Buscar OS por ID", description = "Retorna os detalhes de uma OS específica.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OS encontrada."),

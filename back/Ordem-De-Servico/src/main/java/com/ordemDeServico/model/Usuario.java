@@ -60,10 +60,10 @@ public class Usuario implements UserDetails {
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if( this.role == UserRoles.EXECUTOR) {
-            return List.of(new SimpleGrantedAuthority("ROLE_EXECUTOR"),new SimpleGrantedAuthority("ROLE_USER"));
+        if (this.role == UserRoles.EXECUTOR) {
+            return List.of(new SimpleGrantedAuthority("ROLE_EXECUTOR"));
         }
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority("ROLE_CLIENTE"));
     }
     public UserRoles getAuthority() {
         return role;

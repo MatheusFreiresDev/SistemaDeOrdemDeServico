@@ -3,102 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | Sistema OS</title>
+    <title>Painel | ServiçOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="osList" class="container">
 
-        <header class="dashboard-header">
-            <div class="header-left">
-                <span class="logo-badge">OS</span>
-                <div>
-                    <h1 id="userNameDisplay">Olá!</h1>
-                    <p class="header-subtitle">Gerencie suas ordens de serviço</p>
-                </div>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-logo">
+        <span class="logo-icon">⚙</span>
+        <span class="logo-text">ServiçOS</span>
+    </div>
+    <nav class="sidebar-nav">
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">▦</span>
+            <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" onclick="openModal(); return false;">
+            <span class="nav-icon">＋</span>
+            <span>Nova OS</span>
+        </a>
+    </nav>
+    <div class="sidebar-footer">
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">?</div>
+            <div class="user-details">
+                <span class="user-name" id="userNameDisplay">Carregando...</span>
+                <span class="user-role" id="userRole">—</span>
             </div>
-            <button id="logoutBtn" class="btn btn-ghost">Sair 🚪</button>
-        </header>
-
-        <div class="toolbar">
-            <button id="open-modal-btn" class="btn btn-primary">➕ Nova OS</button>
         </div>
+        <button id="logoutBtn" class="logout-btn" title="Sair">⏻</button>
+    </div>
+</aside>
 
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Título</th>
-                        <th>Status</th>
-                        <th>Prioridade</th>
-                        <th>Categoria</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="ordens-list">
-                    <tr><td colspan="5" class="loading-cell">Carregando...</td></tr>
-                </tbody>
-            </table>
+<!-- MAIN -->
+<main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+        <div>
+            <h1 class="page-title">Ordens de Serviço</h1>
+            <p class="page-sub">Gerencie e acompanhe todas as suas solicitações</p>
         </div>
+        <button class="btn-new" id="open-modal-btn">
+            <span>＋</span> Nova OS
+        </button>
+    </header>
 
+    <!-- STATS -->
+    <div class="stats-row" id="stats-row">
+        <div class="stat-card">
+            <span class="stat-label">Total</span>
+            <span class="stat-value" id="stat-total">—</span>
+        </div>
+        <div class="stat-card stat-open">
+            <span class="stat-label">Abertas</span>
+            <span class="stat-value" id="stat-open">—</span>
+        </div>
+        <div class="stat-card stat-exec">
+            <span class="stat-label">Em Execução</span>
+            <span class="stat-value" id="stat-exec">—</span>
+        </div>
+        <div class="stat-card stat-done">
+            <span class="stat-label">Concluídas</span>
+            <span class="stat-value" id="stat-done">—</span>
+        </div>
     </div>
 
-    <!-- Toast de notificação -->
-    <div id="toast" class="toast"></div>
+    <!-- CARDS GRID -->
+    <div class="cards-grid" id="ordens-list">
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Carregando ordens...</p>
+        </div>
+    </div>
 
-    <!-- Modal -->
-    <div id="os-modal" class="modal">
-        <div class="modal-content">
-            <button class="close-btn" aria-label="Fechar">&times;</button>
+</main>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<!-- MODAL -->
+<div id="os-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
             <h2 id="modal-title">Nova Ordem de Serviço</h2>
+            <button class="modal-close" id="closeModal">&times;</button>
+        </div>
 
-            <form id="create-form">
-                <input type="hidden" id="osId">
+        <form id="create-form">
+            <input type="hidden" id="osId">
 
-                <div class="form-group">
-                    <label for="titulo">Título</label>
-                    <input type="text" id="titulo" placeholder="Descreva brevemente o problema" required>
-                </div>
+            <div class="field">
+                <label for="titulo">Título</label>
+                <input type="text" id="titulo" placeholder="Ex: Manutenção do servidor principal" required>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="categoria">Categoria</label>
-                        <select id="categoria" required>
-                            <option value="RECLAMACAO">Reclamação</option>
-                            <option value="MANUTENCAO">Manutenção</option>
-                            <option value="DUVIDA">Dúvida</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="prioridade">Prioridade</label>
-                        <select id="prioridade" required>
-                            <option value="BAIXA">Baixa</option>
-                            <option value="MEDIA">Média</option>
-                            <option value="ALTA">Alta</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group" id="status-group" style="display:none">
-                    <label for="status">Status</label>
-                    <select id="status">
-                        <option value="ABERTO">Aberto</option>
-                        <option value="EM_EXECUCAO">Em Execução</option>
-                        <option value="CONCLUIDO">Concluído</option>
+            <div class="field-row">
+                <div class="field">
+                    <label for="categoria">Categoria</label>
+                    <select id="categoria" required>
+                        <option value="RECLAMACAO">🔴 Reclamação</option>
+                        <option value="MANUTENCAO">🔧 Manutenção</option>
+                        <option value="DUVIDA">💬 Dúvida</option>
                     </select>
                 </div>
-
-                <div class="form-group">
-                    <label for="descricao">Descrição</label>
-                    <textarea id="descricao" rows="3" placeholder="Detalhes adicionais..."></textarea>
+                <div class="field">
+                    <label for="prioridade">Prioridade</label>
+                    <select id="prioridade" required>
+                        <option value="BAIXA">🟢 Baixa</option>
+                        <option value="MEDIA">🟡 Média</option>
+                        <option value="ALTA">🔴 Alta</option>
+                    </select>
                 </div>
+            </div>
 
-                <div id="form-message" class="message" style="display:none"></div>
-                <button type="submit" class="btn btn-primary btn-full" id="submit-btn">Criar OS</button>
-            </form>
+            <div class="field" id="status-group" style="display:none">
+                <label for="status">Status</label>
+                <select id="status">
+                    <option value="ABERTO">Aberto</option>
+                    <option value="EM_EXECUCAO">Em Execução</option>
+                    <option value="CONCLUIDO">Concluído</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="descricao">Descrição</label>
+                <textarea id="descricao" rows="3" placeholder="Descreva o problema com detalhes..."></textarea>
+            </div>
+
+            <div id="form-message" class="form-msg" style="display:none"></div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button type="submit" class="btn-submit" id="submit-btn">Criar OS</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirm-modal" class="modal-overlay">
+    <div class="modal-box modal-sm">
+        <div class="modal-header">
+            <h2>Confirmar exclusão</h2>
+            <button class="modal-close" onclick="closeConfirm()">&times;</button>
+        </div>
+        <p class="confirm-text">Tem certeza que deseja excluir esta OS? Esta ação não pode ser desfeita.</p>
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeConfirm()">Cancelar</button>
+            <button class="btn-danger" id="confirm-delete-btn">Excluir</button>
         </div>
     </div>
+</div>
 
-    <script src="scripts.js"></script>
+<script src="scripts.js"></script>
 </body>
 </html>

@@ -3,35 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Sistema OS</title>
+    <title>Login | ServiçOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <div class="login-container">
-        <h1 class="logo-title">Sistema OS</h1>
-        <h2 class="form-title">Acesso ao Painel</h2>
+<body class="auth-page">
 
-        <form id="loginForm" class="login-form" method="post" action="#">
-            <div class="input-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" placeholder="Seu e-mail de acesso" required>
+<div class="auth-split">
+
+    <!-- LEFT PANEL -->
+    <div class="auth-brand">
+        <div class="brand-content">
+            <div class="brand-logo">⚙</div>
+            <h1 class="brand-title">ServiçOS</h1>
+            <p class="brand-desc">Gerencie ordens de serviço com eficiência e controle total do seu fluxo de trabalho.</p>
+            <div class="brand-features">
+                <div class="feature-item">
+                    <span class="feature-dot"></span>
+                    <span>Controle por perfil de acesso</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-dot"></span>
+                    <span>Notificações automáticas por e-mail</span>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-dot"></span>
+                    <span>Acompanhamento em tempo real</span>
+                </div>
             </div>
-
-            <div class="input-group">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" placeholder="Sua senha" required>
-            </div>
-
-            <button type="submit" class="btn primary-btn">Entrar</button>
-
-            <div id="message" class="message-area"></div>
-
-            <p class="register-link">
-                Não tem conta? <a href="register.html">Cadastre-se aqui</a>
-            </p>
-        </form>
+        </div>
+        <div class="brand-grid"></div>
     </div>
 
-    <script src="scripts.js"></script>
+    <!-- RIGHT PANEL -->
+    <div class="auth-form-panel">
+        <div class="auth-form-wrap">
+            <div class="auth-header">
+                <h2>Bem-vindo de volta</h2>
+                <p>Entre com suas credenciais para acessar o painel</p>
+            </div>
+
+            <form id="loginForm" method="post" action="#">
+                <div class="field">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" required autocomplete="email">
+                </div>
+
+                <div class="field">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn-auth">Entrar no painel</button>
+
+                <div id="message" class="auth-message"></div>
+
+                <p class="auth-link">Não tem conta? <a href="register.html">Cadastre-se gratuitamente</a></p>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script src="scripts.js"></script>
 </body>
 </html>
