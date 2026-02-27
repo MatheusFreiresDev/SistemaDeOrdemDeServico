@@ -2,12 +2,14 @@ package com.ordemDeServico.controllers;
 
 import com.ordemDeServico.facade.OrdemServicoFacade;
 import com.ordemDeServico.model.OrdemServico;
+import com.ordemDeServico.model.Usuario;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,26 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Gestão de Ordens de Serviço", description = "Endpoints para criar, visualizar, editar e gerenciar o ciclo de vida das OS.")
 public class OrdemServicoController {
-
-    private final OrdemServicoFacade facade;
-
-    @Operation(summary = "Criar nova OS", description = "Cria uma nova ordem de serviço com status inicial 'ABERTO'.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "OS criada com sucesso."),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos ou campos obrigatórios faltando."),
-            @ApiResponse(responseCode = "403", description = "Usuário não autenticado.")
-    })
-    @PostMapping
-    public ResponseEntity<OrdemServico> criar(@RequestBody OrdemServico request) {
-            Usuario usuarioLogado = (Usuario) SecurityContextHolder
-                    .getContext()
-                    .getAuthentication()
-                    .getPrincipal();
-            request.setUsuario(usuarioLogado);
-            return ResponseEntity.status(201).body(facade.criarOS(request));
-        }
-    }
-
+    OrdemServicoFacade facade;
     @Operation(summary = "Listar todas as OS", description = "Retorna a lista de OS baseada no perfil: ADMIN vê tudo, CLIENTE vê as suas, EXECUTOR vê as suas + as disponíveis.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista retornada com sucesso.")
